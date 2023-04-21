@@ -17,13 +17,16 @@ import argparse
 
 #第三方库
 from yacs.config import CfgNode as CN
-import open3d
 
 cfg = CN()
 
 # model
 cfg.model = 'custom'
+
+# dir
 cfg.model_dir = 'data/model'
+cfg.record_dir = 'data/record'
+cfg.result_dir = 'data/result'
 
 # network heads
 cfg.heads = ''
@@ -33,6 +36,12 @@ cfg.task = 'pvnet'
 
 # if load the pretrained network
 cfg.resume = True
+
+# evaluation
+cfg.skip_eval = False
+
+# dataset
+cfg.cls_type = 'charger'
 
 # epoch
 cfg.ep_iter = -1
@@ -85,40 +94,12 @@ cfg.val.dataset = 'CustomVal'
 cfg.test = CN()
 cfg.test.dataset = 'CustomTest'
 cfg.test.batch_size = 1
+cfg.test.batch_sampler = 'image_size'
 cfg.test.epoch = -1
 cfg.test.icp = False
 cfg.test.un_pnp = False
 cfg.test.vsd = False
 cfg.test.det_gt = False
-
-cfg.test.batch_sampler = 'image_size'
-
-cfg.det_meta = CN()
-cfg.det_meta.arch = 'dla'
-cfg.det_meta.num_layers = 34
-cfg.det_meta.heads = CN({'ct_hm': 1, 'wh': 2})
-
-# recorder
-cfg.record_dir = 'data/record'
-
-# result
-cfg.result_dir = 'data/result'
-
-# evaluation
-cfg.skip_eval = False
-
-# dataset
-cfg.cls_type = 'charger'
-
-# tless
-cfg.tless = CN()
-cfg.tless.pvnet_input_scale = (256, 256)
-cfg.tless.scale_train_ratio = (1.8, 2.4)
-cfg.tless.scale_ratio = 2.4
-cfg.tless.box_train_ratio = (1.0, 1.2)
-cfg.tless.box_ratio = 1.2
-cfg.tless.rot = 360.
-cfg.tless.ratio = 0.8
 
 _heads_factory = {
     'pvnet': CN({'vote_dim': 18, 'seg_dim': 2}),
@@ -192,6 +173,4 @@ else:
     parser.add_argument('--det', type=str, default='')                                  # "--det" 
     parser.add_argument("opts", default=None, nargs=argparse.REMAINDER)                 # "--opts"
     args = parser.parse_args()
-    if len(args.type) > 0:
-        cfg.task = "run"
     cfg = make_cfg(args)

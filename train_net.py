@@ -52,8 +52,10 @@ def test(cfg, network):
 def main():
     network = make_network(cfg)
     if args.test:
+        cfg.is_val = False
         test(cfg, network)
     else:
+        cfg.is_val = True
         train(cfg, network)
 
 

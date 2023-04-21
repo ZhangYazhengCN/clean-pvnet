@@ -86,7 +86,7 @@ class Trainer(object):
             iteration = iteration + 1
             """本回合迭代次数"""
             recorder.step += 1  # 记录器总迭代次数+1
-
+            
             # batch = self.to_cuda(batch)
             output, loss, loss_stats, image_stats = self.network(batch)  # 计算本次迭代过程中的结果(output)和损失(loss)
 
@@ -137,6 +137,7 @@ class Trainer(object):
         :param recorder: 记录器, 默认值为None
         :type recorder: Recoder
         """
+        self.network = self.network.cuda()
         self.network.eval()  # 设置网络为验证模式(停止更新BN层参数)
         torch.cuda.empty_cache()  # 释放GPU缓存
         val_loss_stats = {}
@@ -150,7 +151,8 @@ class Trainer(object):
                     batch[k] = batch[k].cuda()  # 生成对应tensor在cuda内存的副本
 
             with torch.no_grad():  # 不需要计算梯度(停止构建计算图)
-                output, loss, loss_stats, image_stats = self.network.module(batch)
+                # output, loss, loss_stats, image_stats = self.network.module(batch)
+                output, loss, loss_stats, image_stats = self.network(batch)
                 # 评估网络的预测结果
                 if evaluator is not None:
                     evaluator.evaluate(output, batch)
@@ -176,4 +178,5 @@ class Trainer(object):
         # 记录本回合损失状态和图像状态至指定文件内
         if recorder:
             recorder.record('val', epoch, val_loss_stats, image_stats)
+        self.network = self.network.cpu()
 

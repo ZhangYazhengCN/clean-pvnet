@@ -15,8 +15,8 @@ std = pvnet_config.std
 
 class Visualizer:
 
-    def __init__(self):
-        args = DatasetCatalog.get(cfg.test.dataset)
+    def __init__(self,is_tarin = False):
+        args = DatasetCatalog.get(cfg.train.dataset) if is_tarin else DatasetCatalog.get(cfg.test.dataset)
         self.ann_file = args['ann_file']
         self.coco = coco.COCO(self.ann_file)
 
@@ -44,10 +44,10 @@ class Visualizer:
         ax.add_patch(patches.Polygon(xy=corner_2d_pred[[5, 4, 6, 7, 5, 1, 3, 7]], fill=False, linewidth=1, edgecolor='b'))
         plt.show()
 
-    def visualize_train(self, output, batch):
-        inp = img_utils.unnormalize_img(batch['inp'][0], mean, std).permute(1, 2, 0)
-        mask = batch['mask'][0].detach().cpu().numpy()
-        vertex = batch['vertex'][0][0].detach().cpu().numpy()
+    def visualize_train(self, batch):
+        inp = img_utils.unnormalize_img(batch['inp'][0], mean, std).permute(1, 2, 0).numpy()
+        mask = batch['mask'][0].numpy()
+        vertex = batch['vertex'][0][0].numpy()
         img_id = int(batch['img_id'][0])
         anno = self.coco.loadAnns(self.coco.getAnnIds(imgIds=img_id))[0]
         fps_2d = np.array(anno['fps_2d'])
