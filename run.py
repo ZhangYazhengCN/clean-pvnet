@@ -2,12 +2,15 @@
 PVNet主启动文件
 
 """
-from lib.config import cfg, args
+# 第三方库
 import numpy as np
-import os
-
+# 自建库
+from lib.config import cfg, args
 
 def run_custom():
+    """
+    run_custom 生成个人数据集
+    """
     from tools import make_dataset
     data_root = 'data/custom'
     back_root = 'data/custom/background'
@@ -15,12 +18,15 @@ def run_custom():
 
 
 def run_dataset():
+    """
+    run_dataset DataLoader迭代训练/验证/测试集
+    """
     from lib.datasets import make_data_loader
     import tqdm
     # import torch
 
     cfg.is_val = True
-    cfg.train.num_workers = 0
+    cfg.test.num_workers = 0
     data_loader = make_data_loader(cfg, is_train=False)
     for batch in tqdm.tqdm(data_loader):
         pass
@@ -29,6 +35,9 @@ def run_dataset():
 
 
 def run_network():
+    """
+    run_network 使用PVNet网络处理测试集数据,输出平均处理时间
+    """
     from lib.networks import make_network
     from lib.datasets import make_data_loader
     from lib.utils.net_utils import load_network
@@ -68,6 +77,9 @@ def run_network():
 
 
 def run_evaluate():
+    """
+    run_evaluate 基于测试集评估PVNet性能,输出评估结果
+    """
     from lib.datasets import make_data_loader
     from lib.evaluators import make_evaluator
     import tqdm
@@ -92,9 +104,11 @@ def run_evaluate():
     evaluator.summarize()
 
 def run_camera():
+    """
+    run_camera 调用笔记本摄像头,实时检测目标并估计6D位姿
+    """
     import cv2
     import torch
-    from pycocotools.coco import COCO
     from lib.networks import make_network
     from lib.utils.net_utils import load_network
     from lib.datasets.transforms import make_transforms
@@ -149,7 +163,6 @@ def run_camera():
         k =  cv2.waitKey(100)
         if k == 27:
             break
-
     camera.release()
     video.release()
     cv2.destroyAllWindows()
@@ -195,7 +208,7 @@ def run_visualize():
         with torch.no_grad():
             output = network(batch['inp'], batch)
         visualizer.visualize(output, batch)
-
+        
 
 if __name__ == '__main__':
     globals()['run_'+args.type]()

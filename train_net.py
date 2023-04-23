@@ -1,5 +1,6 @@
 """
-PVNet训练时启动文件
+网络训练
+========
 
 """
 from lib.config import cfg, args
@@ -21,11 +22,9 @@ def train(cfg, network):
     evaluator = make_evaluator(cfg)
 
     begin_epoch = load_model(network, optimizer, scheduler, recorder, cfg.model_dir, resume=cfg.resume)
-    # set_lr_scheduler(cfg, schedexiuler)
 
     train_loader = make_data_loader(cfg, is_train=True, max_iter=cfg.ep_iter)
     val_loader = make_data_loader(cfg, is_train=False)
-    # train_loader = make_data_loader(cfg, is_train=True, max_iter=100)
 
     for epoch in range(begin_epoch, cfg.train.epoch):
         recorder.epoch = epoch
