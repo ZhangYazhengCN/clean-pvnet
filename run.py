@@ -1,6 +1,8 @@
 """
-PVNet主启动文件
+run.py:
+=======
 
+实用工具启动文件
 """
 # 第三方库
 import numpy as np
@@ -169,6 +171,9 @@ def run_camera():
 
 
 def run_visualize_train():
+    """
+    run_visualize_train 可视化训练集数据
+    """
     from lib.networks import make_network
     from lib.datasets import make_data_loader
     from lib.utils.net_utils import load_network
@@ -185,6 +190,7 @@ def run_visualize_train():
 
 
 def run_visualize():
+    """可视化测试集数据"""
     from lib.networks import make_network
     from lib.datasets import make_data_loader
     from lib.utils.net_utils import load_network
