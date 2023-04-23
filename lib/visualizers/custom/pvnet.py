@@ -1,3 +1,9 @@
+"""
+visualizers.custom.pvnet模块
+============================
+
+
+"""
 from lib.datasets.dataset_catalog import DatasetCatalog
 from lib.config import cfg
 import pycocotools.coco as coco
