@@ -23,6 +23,8 @@ from torchvision.transforms import functional as F
 import cv2
 from PIL import Image
 
+from lib.utils.pvnet import pvnet_config
+
 
 class Compose(object):
     """
@@ -249,14 +251,14 @@ def make_transforms(cfg, is_train):
                 RandomBlur(0.5),
                 ColorJitter(0.1, 0.1, 0.05, 0.05),
                 ToTensor(),
-                Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                Normalize(mean=pvnet_config.mean, std=pvnet_config.std),
             ]
         )
     else:
         transform = Compose(
             [
                 ToTensor(),
-                Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
+                Normalize(mean=pvnet_config.mean, std=pvnet_config.std),
             ]
         )
 
