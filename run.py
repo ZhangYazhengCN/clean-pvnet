@@ -2,12 +2,15 @@
 PVNet主启动文件
 
 """
-from lib.config import cfg, args
+# 第三方库
 import numpy as np
-import os
-
+# 自建库
+from lib.config import cfg, args
 
 def run_custom():
+    """
+    run_custom 生成个人数据集
+    """
     from tools import make_dataset
     data_root = 'data/custom'
     back_root = 'data/custom/background'
@@ -15,12 +18,15 @@ def run_custom():
 
 
 def run_dataset():
+    """
+    run_dataset DataLoader迭代训练/验证/测试集
+    """
     from lib.datasets import make_data_loader
     import tqdm
     # import torch
 
     cfg.is_val = True
-    cfg.train.num_workers = 0
+    cfg.test.num_workers = 0
     data_loader = make_data_loader(cfg, is_train=False)
     for batch in tqdm.tqdm(data_loader):
         pass
@@ -29,6 +35,9 @@ def run_dataset():
 
 
 def run_network():
+    """
+    run_network 使用PVNet网络处理测试集数据,输出平均处理时间
+    """
     from lib.networks import make_network
     from lib.datasets import make_data_loader
     from lib.utils.net_utils import load_network
@@ -68,6 +77,9 @@ def run_network():
 
 
 def run_evaluate():
+    """
+    run_evaluate 基于测试集评估PVNet性能,输出评估结果
+    """
     from lib.datasets import make_data_loader
     from lib.evaluators import make_evaluator
     import tqdm
@@ -92,9 +104,11 @@ def run_evaluate():
     evaluator.summarize()
 
 def run_camera():
+    """
+    run_camera 调用笔记本摄像头,实时检测目标并估计6D位姿
+    """
     import cv2
     import torch
-    from pycocotools.coco import COCO
     from lib.networks import make_network
     from lib.utils.net_utils import load_network
     from lib.datasets.transforms import make_transforms
@@ -149,7 +163,6 @@ def run_camera():
         k =  cv2.waitKey(100)
         if k == 27:
             break
-
     camera.release()
     video.release()
     cv2.destroyAllWindows()
@@ -191,64 +204,7 @@ def run_visualize():
         with torch.no_grad():
             output = network(batch['inp'], batch)
         visualizer.visualize(output, batch)
-
-
-def run_net_utils():
-    from lib.utils import net_utils
-    import torch
-    import os
-
-    model_path = 'data/model/rcnn_snake/rcnn/139.pth'
-    pretrained_model = torch.load(model_path)
-    net = pretrained_model['net']
-    net = net_utils.remove_net_prefix(net, 'dla.')
-    net = net_utils.remove_net_prefix(net, 'cp.')
-    pretrained_model['net'] = net
-    model_path = 'data/model/rcnn_snake/rcnn/139.pth'
-    os.system('mkdir -p {}'.format(os.path.dirname(model_path)))
-    torch.save(pretrained_model, model_path)
-
-
-def run_render():
-    from lib.utils.renderer import opengl_utils
-    from lib.utils.vsd import inout
-    from lib.utils.linemod import linemod_config
-    import matplotlib.pyplot as plt
-
-    obj_path = 'data/linemod/cat/cat.ply'
-    model = inout.load_ply(obj_path)
-    model['pts'] = model['pts'] * 1000.
-    im_size = (640, 300)
-    opengl = opengl_utils.NormalRender(model, im_size)
-
-    K = linemod_config.linemod_K
-    pose = np.load('data/linemod/cat/pose/pose0.npy')
-    depth = opengl.render(im_size, 100, 10000, K, pose[:, :3], pose[:, 3:] * 1000)
-
-    plt.imshow(depth)
-    plt.show()
-
-
-def run_detector_pvnet():
-    from lib.networks import make_network
-    from lib.datasets import make_data_loader
-    from lib.utils.net_utils import load_network
-    import tqdm
-    import torch
-    from lib.visualizers import make_visualizer
-
-    network = make_network(cfg).cuda()
-    network.eval()
-
-    data_loader = make_data_loader(cfg, is_train=False)
-    visualizer = make_visualizer(cfg)
-    for batch in tqdm.tqdm(data_loader):
-        for k in batch:
-            if k != 'meta':
-                batch[k] = batch[k].cuda()
-        with torch.no_grad():
-            output = network(batch['inp'], batch)
-        visualizer.visualize(output, batch)
+        
 
 if __name__ == '__main__':
     globals()['run_'+args.type]()

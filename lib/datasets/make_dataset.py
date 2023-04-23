@@ -173,7 +173,7 @@ def make_data_loader(cfg, is_train=True, is_distributed=False, max_iter=-1):
     dataset = make_dataset(cfg, dataset_name, transforms, is_train)     # 生成dataset实例
     sampler = make_data_sampler(dataset, shuffle)                       # 生成sampler实例
     batch_sampler = make_batch_data_sampler(cfg, sampler, batch_size, drop_last, max_iter, is_train) # 生成batch_sampler实例
-    num_workers = cfg.train.num_workers                                 # 确定dataloader可调用子进程的数目
+    num_workers = cfg.train.num_workers if is_train else cfg.test.num_workers                          # 确定dataloader可调用子进程的数目
     collator = make_collator(cfg)                                       # 确定collator函数
     data_loader = torch.utils.data.DataLoader(                          # 生成dataset实例
         dataset,
