@@ -132,7 +132,7 @@ def run_camera():
     camera = cv2.VideoCapture(0)
     fourcc = cv2.VideoWriter_fourcc(*'XVID')
     frameSize = (int(camera.get(cv2.CAP_PROP_FRAME_WIDTH)*ratio),int(camera.get(cv2.CAP_PROP_FRAME_HEIGHT)*ratio))
-    video = cv2.VideoWriter('data/video.avi',fourcc=fourcc,fps=5,frameSize=frameSize,isColor=True)
+    video = cv2.VideoWriter('data/video/video.avi',fourcc=fourcc,fps=5,frameSize=frameSize,isColor=True)
     cv2.namedWindow('display')
     while True:
         ret,img =  camera.read()
@@ -150,8 +150,8 @@ def run_camera():
             # img_in = (corner_2d<[480,640]) * (corner_2d>=[0,0]) 
             # corner_2d = corner_2d[img_in[:,0]*img_in[:,1]]
             img_pose = img.copy()
-            cv2.polylines(img_pose,corner_2d[None,[0, 1, 3, 2, 0, 4, 6, 2],None,:],isClosed=True,color=(0,255,0),thickness=2)
-            cv2.polylines(img_pose,corner_2d[None,[5, 4, 6, 7, 5, 1, 3, 7],None,:],isClosed=True,color=(0,255,0),thickness=2)
+            cv2.polylines(img_pose,corner_2d[None,[0, 1, 3, 2, 0, 4, 6, 2]],isClosed=True,color=(0,255,0),thickness=2,lineType=cv2.LINE_AA)
+            cv2.polylines(img_pose,corner_2d[None,[5, 4, 6, 7, 5, 1, 3, 7]],isClosed=True,color=(0,255,0),thickness=2,lineType=cv2.LINE_AA)
 
         display = np.ones((frameSize[1],frameSize[0],img.shape[2]),img.dtype)*255
         display[:img.shape[0],:img.shape[1]] = img
@@ -183,6 +183,7 @@ def run_visualize_train():
         visualizer.visualize_train(batch)
 
 
+
 def run_visualize():
     from lib.networks import make_network
     from lib.datasets import make_data_loader
@@ -190,13 +191,16 @@ def run_visualize():
     import tqdm
     import torch
     from lib.visualizers import make_visualizer
+    import matplotlib.pyplot as plt 
+
+    cfg.is_val = False
 
     network = make_network(cfg).cuda()
     load_network(network, cfg.model_dir, resume=cfg.resume, epoch=cfg.test.epoch)
     network.eval()
 
     data_loader = make_data_loader(cfg, is_train=False)
-    visualizer = make_visualizer(cfg)
+    visualizer = make_visualizer(cfg, is_train=False)
     for batch in tqdm.tqdm(data_loader):
         for k in batch:
             if k != 'meta':

@@ -2,10 +2,10 @@
 pvnet模块
 =========
 
-主要用pvnet类对linemode数据集进行封装，并实现了以下功能：
+主要用pvnet类对linemode数据集进行封装,并实现了以下功能:
 
-- __iter__方法：可通过索引(index)来linemode数据集中的对应数据进行访问
-- __len__方法：可通过调用len()方法来获取数据集的数据总量
+- __iter__方法:可通过索引(index)来linemode数据集中的对应数据进行访问
+- __len__方法:可通过调用len()方法来获取数据集的数据总量
 - 数据增强：对数据进行颜色空间、几何空间、像素空间的随机变换
 """
 
@@ -29,7 +29,7 @@ from lib.datasets.augmentation import crop_or_padding_to_fixed_size, rotate_inst
 
 class Dataset(data.Dataset):
     """
-    Dataset 封装Linemod数据集，实现数据增强、__iter__、__len__等功能或方法
+    Dataset 封装Linemod数据集,实现数据增强、__iter__、__len__等功能或方法
 
     :param ann_file: linemod属性文件路径
     :type ann_file: str
@@ -65,11 +65,11 @@ class Dataset(data.Dataset):
 
     def read_data(self, img_id):
         """
-        read_data 根据图像id读取对应的图像，2D关键点和掩码
+        read_data 根据图像id读取对应的图像,2D关键点和掩码
 
         :param img_id: 图像id
         :type img_id: int
-        :return: 对应的图像，2D关键点和掩码
+        :return: 对应的图像,2D关键点和掩码
         :rtype: tuple(PIL.Image, narray(9*2), narray)
         """        
         ann_ids = self.coco.getAnnIds(imgIds=img_id)
@@ -91,7 +91,7 @@ class Dataset(data.Dataset):
 
         :param index_tuple: 索引值
         :type index_tuple: tuple(index, heigit, weight)
-        :return: 图像img，掩码mask，像素指向特征点的单位向量vertex，图像id，空字典meta
+        :return: 图像img,掩码mask,像素指向特征点的单位向量vertex,图像id,空字典meta
         :rtype: dict
         """                
         index, height, width = index_tuple
@@ -109,7 +109,7 @@ class Dataset(data.Dataset):
             inp, kpt_2d, mask = self._transforms(inp, kpt_2d, mask)
         
         vertex = pvnet_data_utils.compute_vertex(mask, kpt_2d).transpose(2, 0, 1) # 计算各个像素指向特征点的单位向量
-        ret = {'inp': inp, 'mask': mask.astype(np.uint8), 'vertex': vertex, 'img_id': img_id, 'meta': {}}
+        ret = {'inp': inp, 'mask': mask.astype(np.uint8), 'vertex': vertex, 'img_id': img_id, 'meta': {'kpt_2d':kpt_2d}}
         # visualize_utils.visualize_linemod_ann(torch.tensor(inp), kpt_2d, mask, True)
 
         return ret
