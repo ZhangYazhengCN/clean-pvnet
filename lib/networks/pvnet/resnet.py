@@ -32,11 +32,10 @@ import torch
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 
-"""供外部调用的接口"""
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
            'resnet152']
+"""供外部调用的接口"""
 
-"""预训练resnet网络参数的下载地址"""
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
     'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
@@ -44,6 +43,7 @@ model_urls = {
     'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
 }
+"""预训练resnet网络参数的下载地址"""
 
 
 def conv3x3(in_planes, out_planes, stride=1, dilation=1):
@@ -93,8 +93,8 @@ class BasicBlock(nn.Module):
     :param dilation: 膨胀率(在本模块的各个神经层均有使用), 默认值为1
     :type dilation: int
     """
-    """输出维度的扩大倍数,本模块的输出维度=expansion*planes"""
     expansion = 1
+    """输出维度的扩大倍数,本模块的输出维度=expansion*planes"""
 
     def __init__(self, inplanes, planes, stride=1, downsample=None, dilation=1):
         """
@@ -157,9 +157,9 @@ class Bottleneck(nn.Module):
     :param dilation: 膨胀率(在本模块的各个神经层均有使用), 默认值为1
     :type dilation: int
     """
-    """本模块的输出维度=expansion*4"""
     expansion = 4
-
+    """本模块的输出维度=expansion*4"""
+    
     def __init__(self, inplanes, planes, stride=1, downsample=None, dilation=1):
         """
         __init__ 初始化函数
