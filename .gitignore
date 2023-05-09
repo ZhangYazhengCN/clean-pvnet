@@ -11,5 +11,5 @@ __pycache__/
 *.ipynb
 *.npy
 docs/
-data/
+data
 test.py
