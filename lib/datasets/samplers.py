@@ -29,7 +29,7 @@ class ImageSizeBatchSampler(Sampler):
     :type sampler: Sample子类
     :param batch_size: 单次采样的数据量
     :type batch_size: int
-    :param drop_last: 当最后一批数据量小于batch_size时，则将其丢弃(取True时)
+    :param drop_last: 当最后一批数据量小于batch_size时,则将其丢弃(取True时)
     :type drop_last: bool
     :param min_size: 图片高宽的最小值, 默认值为600
     :type min_size: int
@@ -48,7 +48,7 @@ class ImageSizeBatchSampler(Sampler):
         :type sampler: Sample子类
         :param batch_size: 单次采样的数据量
         :type batch_size: int
-        :param drop_last: 当最后一批数据量小于batch_size时，则将其丢弃(取True时)
+        :param drop_last: 当最后一批数据量小于batch_size时,则将其丢弃(取True时)
         :type drop_last: bool
         :param min_size: 图片高宽的最小值, 默认值为600
         :type min_size: int
