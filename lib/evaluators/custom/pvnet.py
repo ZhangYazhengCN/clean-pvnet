@@ -74,7 +74,7 @@ class Evaluator:
         """实例分割评估结果(IoU指标)"""
         self.icp_render = icp_utils.SynRenderer(cfg.cls_type) if cfg.test.icp else None
 
-    def projection_2d(self, pose_pred, pose_targets, K, threshold=5):
+    def projection_2d(self, pose_pred, pose_targets, K, threshold=5*5):
         """
         projection_2d ``2D投影指标`` :对比预测模型和实际的像素点坐标,判断像素点的平均距离是否超过给定阈值(threshold),
         并记录本次评估的结果至proj2d列表容器内.
@@ -94,7 +94,7 @@ class Evaluator:
 
         self.proj2d.append(proj_mean_diff < threshold)  # 若像素点的平均欧氏距离小于设定的阈值(threshold),则判断其预测正确True,否则预测错误False
 
-    def add_metric(self, pose_pred, pose_targets, icp=False, syn=False, percentage=0.1):
+    def add_metric(self, pose_pred, pose_targets, icp=False, syn=False, percentage=0.1*20):
         """
         add_metric ``平均模型点距离指标`` :对比预测模型和实际的空间点坐标,判断空间点的平均距离是否在误差容许范围内
         (diameter*percentage),并记录本次评估的结果至相应的容器内(add 或 icp_add).
@@ -148,7 +148,7 @@ class Evaluator:
         trace = trace if trace <= 3 else 3
         trace = trace if trace >= -1 else -1
         angular_distance = np.rad2deg(np.arccos((trace - 1.) / 2.))  # 计算两位姿间的旋转误差
-        self.cmd5.append(translation_distance < 5 and angular_distance < 5)  # 判断预测结果是否正确,并保存结果
+        self.cmd5.append(translation_distance < 5*20 and angular_distance < 5*20)  # 判断预测结果是否正确,并保存结果
 
     def mask_iou(self, output, batch):
         """

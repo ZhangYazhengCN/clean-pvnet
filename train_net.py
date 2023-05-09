@@ -1,6 +1,6 @@
 """
 train_net.py:网络训练/测试启动文件
-=================================
+==================================
 
 本文件是网络训练和测试时的启动文件.
 
@@ -13,7 +13,7 @@ import torch.multiprocessing
 # 自建库
 from lib.config import cfg, args
 from lib.networks import make_network
-from lib.train import make_trainer, make_optimizer, make_lr_scheduler, make_recorder, set_lr_scheduler
+from lib.train import make_trainer, make_optimizer, make_lr_scheduler, make_recorder
 from lib.datasets import make_data_loader
 from lib.utils.net_utils import load_model, save_model, load_network
 from lib.evaluators import make_evaluator

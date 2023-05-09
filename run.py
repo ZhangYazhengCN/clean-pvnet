@@ -160,7 +160,8 @@ def run_camera():
         display[:mask.shape[0],-mask.shape[1]:] = img*mask[...,None]
         display[-img_pose.shape[0]:,:img_pose.shape[1]] = img_pose
         cv2.imshow('display',display)
-        video.write(display)
+        # ------------------------- forbid write video ----------------------------------
+        # video.write(display)
         print(pose)
         k =  cv2.waitKey(100)
         if k == 27:
