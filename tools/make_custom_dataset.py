@@ -82,7 +82,9 @@ class BackImg:
         return len(paths)-1
 
 # ---------------------------------- need improvement -----------------------------
-coco = COCO('data/linemod/cat/train.json')
+import os
+
+coco = COCO(os.path.join('/'.join(__file__.split('/')[:-2]), 'data/linemod/cat/train.json'))  # make sphinx reconginze path
 len_ = len(coco.getAnnIds())
 offset = 0
 for _ in range(len_):

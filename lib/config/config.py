@@ -199,3 +199,10 @@ else:
     args = parser.parse_args()
     # 基于命令行参数更新配置信息
     cfg = make_cfg(args)
+
+# ignore warning message
+import sys
+
+if not sys.warnoptions:
+    import warnings
+    warnings.simplefilter("ignore")
